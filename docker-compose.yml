@@ -1,0 +1,16 @@
+services:
+  atmosphera:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: atmosphera
+    ports:
+      - "8090:8090"
+    networks:
+      - shared
+    mem_limit: 64m
+    restart: unless-stopped
+
+networks:
+  shared:
+    external: true

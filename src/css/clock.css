@@ -1,0 +1,20 @@
+.time-display {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.time-clock {
+  font-size: 48px;
+  font-weight: 300;
+  color: var(--text-secondary);
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+  line-height: 1;
+}
+
+.time-date {
+  font-size: 13px;
+  font-weight: 300;
+  color: var(--text-dim);
+  letter-spacing: 2px;
+  margin-top: 6px;
+}

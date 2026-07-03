@@ -1,0 +1,120 @@
+@media (max-width: 768px) {
+  .top-bar {
+    padding: 20px 20px;
+  }
+
+  .brand { display: none; }
+
+  .search-wrap { width: 100%; }
+
+  .search-input {
+    width: 100%;
+  }
+
+  .search-input:focus {
+    width: 100%;
+  }
+
+  .suggestions {
+    width: 100%;
+  }
+
+  .bottom-bar {
+    flex-direction: column-reverse;
+    align-items: stretch;
+    padding: 0 20px 20px;
+    gap: 16px;
+  }
+
+  .weather-panel {
+    max-width: none;
+  }
+
+  .weather-glass {
+    padding: 20px 24px;
+  }
+
+  .weather-temp {
+    font-size: 56px;
+  }
+
+  .weather-temp .unit {
+    font-size: 22px;
+  }
+
+  .time-display {
+    text-align: left;
+  }
+
+  .time-clock {
+    font-size: 36px;
+  }
+
+  .time-date {
+    font-size: 12px;
+  }
+
+  .forecast-day .day-icon { font-size: 16px; }
+}
+
+@media (max-width: 480px) {
+  .top-bar {
+    padding: 16px 16px;
+  }
+
+  .bottom-bar {
+    padding: 0 16px 16px;
+    gap: 12px;
+  }
+
+  .weather-glass {
+    padding: 16px 18px;
+  }
+
+  .weather-temp {
+    font-size: 44px;
+  }
+
+  .weather-temp .unit {
+    font-size: 18px;
+  }
+
+  .weather-desc {
+    font-size: 14px;
+  }
+
+  .weather-details {
+    gap: 8px;
+    margin-top: 14px;
+    padding-top: 14px;
+  }
+
+  .detail-value {
+    font-size: 14px;
+  }
+
+  .hourly-row {
+    margin-top: 14px;
+    padding-top: 14px;
+    gap: 2px;
+  }
+
+  .hourly-item {
+    padding: 6px 8px;
+    min-width: 42px;
+  }
+
+  .forecast-row {
+    margin-top: 14px;
+    padding-top: 14px;
+    gap: 6px;
+  }
+
+  .forecast-day {
+    padding: 6px 2px;
+  }
+
+  .time-clock {
+    font-size: 28px;
+  }
+}

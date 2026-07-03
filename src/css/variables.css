@@ -1,0 +1,14 @@
+:root {
+  --glass-bg: rgba(0, 0, 0, 0.3);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-blur: 24px;
+  --text-primary: #fff;
+  --text-secondary: rgba(255, 255, 255, 0.7);
+  --text-muted: rgba(255, 255, 255, 0.5);
+  --text-dim: rgba(255, 255, 255, 0.35);
+  --text-faint: rgba(255, 255, 255, 0.4);
+  --font-family: 'Inter', sans-serif;
+  --radius-sm: 10px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+}

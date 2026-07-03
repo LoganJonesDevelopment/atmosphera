@@ -1,0 +1,80 @@
+.search-wrap {
+  position: relative;
+}
+
+.search-input {
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-md);
+  padding: 10px 16px 10px 38px;
+  font-size: 14px;
+  font-family: var(--font-family);
+  color: var(--text-primary);
+  width: 260px;
+  outline: none;
+  transition: all 0.3s;
+}
+
+.search-input::placeholder { color: var(--text-dim); }
+
+.search-input:focus {
+  border-color: rgba(255, 255, 255, 0.25);
+  background: rgba(0, 0, 0, 0.5);
+  width: 320px;
+}
+
+.search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-dim);
+  font-size: 14px;
+}
+
+.geolocate-btn {
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  cursor: pointer;
+  padding: 6px 8px;
+  font-size: 14px;
+  transition: color 0.2s;
+  border-radius: 8px;
+}
+
+.geolocate-btn:hover { color: var(--text-secondary); }
+
+.suggestions {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  width: 320px;
+  background: rgba(10, 10, 20, 0.85);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  display: none;
+}
+
+.suggestions.active { display: block; }
+
+.suggestion-item {
+  padding: 12px 16px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: background 0.15s;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.suggestion-item:last-child { border-bottom: none; }
+.suggestion-item:hover, .suggestion-item.active-item { background: rgba(255, 255, 255, 0.08); }
+.suggestion-item .city { font-weight: 500; color: var(--text-primary); }
+.suggestion-item .region { color: var(--text-faint); font-weight: 300; margin-left: 6px; }
