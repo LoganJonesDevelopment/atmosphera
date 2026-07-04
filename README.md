@@ -22,4 +22,4 @@ There is no build step. The `src/` directory is copied into the nginx image as-i
 
 ## Screenshots
 
-![Dawn over Minneapolis](docs/screenshots/dawn.png)
+![Midday over Minneapolis](docs/screenshots/scene.png)
