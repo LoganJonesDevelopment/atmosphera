@@ -17,12 +17,10 @@ export function initStars() {
 }
 
 export function getSunProgress() {
-  const now = new Date();
-  const [sh, sm] = weatherState.sunrise.split(':').map(Number);
-  const [eh, em] = weatherState.sunset.split(':').map(Number);
-  const sunriseMin = sh * 60 + sm;
-  const sunsetMin = eh * 60 + em;
-  const nowMin = now.getHours() * 60 + now.getMinutes();
+  const localNow = new Date(Date.now() + weatherState.utcOffset * 1000);
+  const sunriseMin = weatherState.sunriseMin;
+  const sunsetMin = weatherState.sunsetMin;
+  const nowMin = localNow.getUTCHours() * 60 + localNow.getUTCMinutes();
   if (nowMin < sunriseMin) return (nowMin + 1440 - sunsetMin) / (sunriseMin + 1440 - sunsetMin) * -0.5;
   if (nowMin > sunsetMin) return 1 + (nowMin - sunsetMin) / (1440 - sunsetMin + sunriseMin) * 0.5;
   return (nowMin - sunriseMin) / (sunsetMin - sunriseMin);

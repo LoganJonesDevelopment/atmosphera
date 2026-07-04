@@ -4,8 +4,9 @@ export const weatherState = {
   windSpeed: 5,
   humidity: 50,
   isDay: true,
-  sunrise: '06:00',
-  sunset: '18:00',
+  sunriseMin: 360,
+  sunsetMin: 1080,
+  utcOffset: -new Date().getTimezoneOffset() * 60,
   cloudCover: 0,
   precipitation: 0,
 };

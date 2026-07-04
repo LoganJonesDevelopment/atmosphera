@@ -1,5 +1,5 @@
 import { initCanvas, getCtx, getW, getH } from './canvas.js';
-import { currentLat, currentLon } from './state.js';
+import { currentLat, currentLon, weatherState } from './state.js';
 import { fetchWeather } from './api.js';
 import { applyWeatherToScene } from './weather-engine.js';
 import { initTerrain, drawTerrain, drawGrass, drawPuddles } from './scene/terrain.js';
@@ -8,27 +8,30 @@ import {
   initClouds, initFog, initBirds,
   drawClouds, drawRain, drawSnow, drawLightning, drawFog, drawBirds
 } from './scene/atmosphere.js';
-import { selectLocation, setupSearch, setupUnitToggle, setupGeolocate, setupClock, updateUI } from './ui.js';
+import { selectLocation, setupSearch, setupUnitToggle, setupGeolocate, setupClock, updateUI, showLoadError } from './ui.js';
 
 let time = 0;
+let lastTs = 0;
 
-function draw() {
-  time += 0.016;
+function draw(ts) {
+  const dt = Math.min((ts - lastTs) / 1000, 0.1);
+  lastTs = ts;
+  time += dt;
   const ctx = getCtx(), W = getW(), H = getH();
   ctx.clearRect(0, 0, W, H);
   drawSky();
   drawStars(time);
   drawSun();
   drawMoon();
-  drawClouds();
+  drawClouds(dt);
   drawTerrain();
   drawGrass(time);
   drawPuddles(time);
-  drawFog();
-  drawRain();
-  drawSnow(time);
-  drawLightning();
-  drawBirds();
+  drawFog(dt);
+  drawRain(dt);
+  drawSnow(time, dt);
+  drawLightning(dt);
+  drawBirds(dt);
   requestAnimationFrame(draw);
 }
 
@@ -40,31 +43,46 @@ export async function init() {
   initFog();
   initBirds();
 
-  window.addEventListener('canvas-resize', () => initTerrain());
+  window.addEventListener('canvas-resize', () => {
+    initTerrain();
+    initStars();
+    initClouds();
+    initBirds();
+    if (weatherState.code >= 45 && weatherState.code <= 48) initFog();
+  });
 
   setupSearch();
   setupUnitToggle();
   setupGeolocate();
   setupClock();
 
-  draw();
+  requestAnimationFrame(draw);
 
-  const saved = localStorage.getItem('weather_location');
-  if (saved) {
-    const loc = JSON.parse(saved);
-    await selectLocation(loc.lat, loc.lon, loc.name, loc.admin, loc.country);
-  } else {
-    await selectLocation(30.27, -97.74, 'Austin', 'Texas', 'United States');
+  let saved = null;
+  try {
+    saved = JSON.parse(localStorage.getItem('weather_location'));
+  } catch {
+    localStorage.removeItem('weather_location');
   }
 
-  setTimeout(() => document.getElementById('loading').classList.add('hidden'), 600);
+  try {
+    if (saved) {
+      await selectLocation(saved.lat, saved.lon, saved.name, saved.admin, saved.country);
+    } else {
+      await selectLocation(30.27, -97.74, 'Austin', 'Texas', 'United States');
+    }
+  } catch {
+    showLoadError();
+  } finally {
+    setTimeout(() => document.getElementById('loading').classList.add('hidden'), 600);
+  }
 
   setInterval(() => {
     if (currentLat !== null) {
       fetchWeather(currentLat, currentLon).then(data => {
         applyWeatherToScene(data);
         updateUI(data);
-      });
+      }).catch(() => {});
     }
   }, 900000);
 }

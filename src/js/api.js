@@ -9,14 +9,17 @@ export async function fetchWeather(lat, lon) {
     hourly: 'temperature_2m,weather_code,is_day',
     daily: 'weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset',
     timezone: 'auto',
+    timeformat: 'unixtime',
     forecast_days: 7
   });
   const resp = await fetch(`${API_BASE}/forecast?${params}`);
+  if (!resp.ok) throw new Error(`Forecast request failed: ${resp.status}`);
   return resp.json();
 }
 
 export async function geocode(query) {
   const params = new URLSearchParams({ name: query, count: 5, language: 'en' });
   const resp = await fetch(`${GEO_BASE}/search?${params}`);
+  if (!resp.ok) throw new Error(`Geocoding request failed: ${resp.status}`);
   return resp.json();
 }

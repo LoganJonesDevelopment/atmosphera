@@ -12,8 +12,6 @@ A weather dashboard that renders the current conditions as an animated canvas sc
 
 ## Running
 
-Requires the external Docker network `shared` to exist (`docker network create shared` if it doesn't).
-
 ```
 docker compose up -d
 ```

@@ -3,6 +3,7 @@ import { weatherState } from '../state.js';
 
 let terrainPoints = [];
 let grassBlades = [];
+let puddles = [];
 
 export function initTerrain() {
   const W = getW(), H = getH();
@@ -30,6 +31,12 @@ export function initTerrain() {
       x, y: terrainY, height: 8 + Math.random() * 16,
       sway: Math.random() * Math.PI * 2, swaySpeed: 0.5 + Math.random() * 1.5
     });
+  }
+
+  puddles = [];
+  for (let i = 0; i < 8; i++) {
+    const x = Math.random() * W;
+    puddles.push({ x, y: getTerrainY(x, 0) + 3 });
   }
 }
 
@@ -94,14 +101,12 @@ export function drawGrass(time) {
 
 export function drawPuddles(time) {
   if (weatherState.code < 63) return;
-  const ctx = getCtx(), W = getW();
-  for (let i = 0; i < 8; i++) {
-    const px = Math.random() * W;
-    const py = getTerrainY(px, 0) + 3;
+  const ctx = getCtx();
+  puddles.forEach((p, i) => {
     const ripple = Math.sin(time * 3 + i * 2) * 2;
     ctx.beginPath();
-    ctx.ellipse(px, py, 15 + ripple, 3 + ripple * 0.3, 0, 0, Math.PI * 2);
+    ctx.ellipse(p.x, p.y, 15 + ripple, 3 + ripple * 0.3, 0, 0, Math.PI * 2);
     ctx.fillStyle = 'rgba(100,140,180,0.1)';
     ctx.fill();
-  }
+  });
 }

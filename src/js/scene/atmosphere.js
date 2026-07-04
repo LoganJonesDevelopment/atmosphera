@@ -90,10 +90,10 @@ export function initBirds() {
   }
 }
 
-export function drawClouds() {
+export function drawClouds(dt) {
   const ctx = getCtx(), W = getW(), H = getH();
   clouds.forEach(c => {
-    c.x += c.speed * (weatherState.windSpeed / 10 + 0.3);
+    c.x += c.speed * (weatherState.windSpeed / 10 + 0.3) * dt * 60;
     if (c.x > W + c.width) { c.x = -c.width - 50; c.y = 30 + Math.random() * H * 0.3; }
     const isDark = weatherState.code >= 61 || !weatherState.isDay;
     const baseR = isDark ? 60 : 240;
@@ -109,12 +109,12 @@ export function drawClouds() {
   });
 }
 
-export function drawRain() {
+export function drawRain(dt) {
   const ctx = getCtx(), W = getW(), H = getH();
   const wind = weatherState.windSpeed * 0.3;
   raindrops.forEach(r => {
-    r.y += r.speed;
-    r.x += wind;
+    r.y += r.speed * dt * 60;
+    r.x += wind * dt * 60;
     if (r.y > H || r.x > W + 50) { r.y = -20; r.x = Math.random() * W; }
     ctx.beginPath();
     ctx.moveTo(r.x, r.y);
@@ -125,11 +125,11 @@ export function drawRain() {
   });
 }
 
-export function drawSnow(time) {
+export function drawSnow(time, dt) {
   const ctx = getCtx(), W = getW(), H = getH();
   snowflakes.forEach(s => {
-    s.y += s.speed;
-    s.x += Math.sin(s.wobble + time * s.wobbleSpeed) * 0.5 + weatherState.windSpeed * 0.1;
+    s.y += s.speed * dt * 60;
+    s.x += (Math.sin(s.wobble + time * s.wobbleSpeed) * 0.5 + weatherState.windSpeed * 0.1) * dt * 60;
     if (s.y > H) { s.y = -10; s.x = Math.random() * W; }
     if (s.x > W) s.x = 0;
     ctx.beginPath();
@@ -139,10 +139,10 @@ export function drawSnow(time) {
   });
 }
 
-export function drawLightning() {
+export function drawLightning(dt) {
   if (weatherState.code < 95) { lightning.active = false; return; }
   const ctx = getCtx(), W = getW(), H = getH();
-  lightning.timer -= 1;
+  lightning.timer -= dt * 60;
   if (lightning.timer <= 0) {
     lightning.timer = 120 + Math.random() * 300;
     lightning.active = true;
@@ -184,16 +184,16 @@ export function drawLightning() {
         ctx.stroke();
       }
     });
-    lightning.flash *= 0.92;
+    lightning.flash *= Math.pow(0.92, dt * 60);
     if (lightning.flash < 0.01) lightning.flash = 0;
   }
 }
 
-export function drawFog() {
+export function drawFog(dt) {
   if (weatherState.code < 45 || weatherState.code > 48) return;
   const ctx = getCtx(), W = getW();
   fogLayers.forEach(f => {
-    f.offset += f.speed;
+    f.offset += f.speed * dt * 60;
     for (let x = -200; x < W + 200; x += 80) {
       const waveY = f.y + Math.sin((x + f.offset * 30) * 0.005) * 30;
       ctx.beginPath();
@@ -204,11 +204,11 @@ export function drawFog() {
   });
 }
 
-export function drawBirds() {
+export function drawBirds(dt) {
   const ctx = getCtx(), W = getW(), H = getH();
   birds.forEach(b => {
-    b.x += b.speed;
-    b.wingPhase += 0.08;
+    b.x += b.speed * dt * 60;
+    b.wingPhase += 0.08 * dt * 60;
     if (b.x > W + 50) { b.x = -50; b.y = 50 + Math.random() * H * 0.25; }
     const wing = Math.sin(b.wingPhase) * b.size;
     ctx.beginPath();
