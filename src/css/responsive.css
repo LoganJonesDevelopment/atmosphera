@@ -13,16 +13,19 @@
     font-size: 16px;
     padding-top: 12px;
     padding-bottom: 12px;
+    padding-right: 84px;
   }
 
   .search-input:focus {
     width: 100%;
   }
 
-  .geolocate-btn {
+  .geolocate-btn,
+  .random-btn {
     padding: 10px 12px;
-    font-size: 16px;
   }
+
+  .random-btn { right: 42px; }
 
   .suggestions {
     width: 100%;

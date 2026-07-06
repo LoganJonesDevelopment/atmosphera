@@ -9,7 +9,7 @@ A weather dashboard that renders the current conditions as an animated canvas sc
 - Animated scene that reacts to real weather: sky color shifts with time of day (sunrise/sunset from the forecast), cloud density scales with cloud cover, precipitation intensity maps from WMO weather codes
 - Current conditions panel with temperature, wind, humidity, and feels-like
 - 24-hour hourly strip and 5-day forecast
-- City search (Open-Meteo geocoding) and browser geolocation
+- City search (Open-Meteo geocoding), browser geolocation, and a die that teleports you to a random city — Svalbard to Ushuaia
 - Celsius/Fahrenheit toggle
 - Mobile-first responsive layout: collapsible forecast panel, safe-area aware, `prefers-reduced-motion` support
 

@@ -2,6 +2,7 @@ import { formatTemp, useFahrenheit, setUseFahrenheit, currentWeatherData, setCur
 import { WMO_DESCRIPTIONS, WMO_ICONS, MOON_ICON, DEFAULT_ICON } from './weather-codes.js';
 import { fetchWeather, geocode } from './api.js';
 import { applyWeatherToScene } from './weather-engine.js';
+import { CITIES } from './cities.js';
 
 export function updateUI(data) {
   const c = data.current;
@@ -218,6 +219,21 @@ export function setupGeolocate() {
       searchInput.placeholder = 'Location unavailable';
       setTimeout(() => { searchInput.placeholder = defaultPlaceholder; }, 3000);
     });
+  });
+}
+
+export function setupRandomCity() {
+  const btn = document.getElementById('randomBtn');
+  let last = -1;
+  btn.addEventListener('click', () => {
+    let i;
+    do { i = Math.floor(Math.random() * CITIES.length); } while (i === last);
+    last = i;
+    const [name, admin, country, lat, lon] = CITIES[i];
+    btn.classList.remove('rolling');
+    void btn.offsetWidth;
+    btn.classList.add('rolling');
+    selectLocation(lat, lon, name, admin, country).catch(showLoadError);
   });
 }
 

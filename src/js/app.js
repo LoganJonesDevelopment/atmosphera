@@ -8,7 +8,7 @@ import {
   initClouds, initFog, initBirds,
   drawClouds, drawRain, drawSnow, drawLightning, drawFog, drawBirds
 } from './scene/atmosphere.js';
-import { selectLocation, setupSearch, setupUnitToggle, setupGeolocate, setupClock, setupPanelToggle, updateUI, showLoadError } from './ui.js';
+import { selectLocation, setupSearch, setupUnitToggle, setupGeolocate, setupClock, setupPanelToggle, setupRandomCity, updateUI, showLoadError } from './ui.js';
 
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 let time = 0;
@@ -65,6 +65,7 @@ export async function init() {
   setupGeolocate();
   setupClock();
   setupPanelToggle();
+  setupRandomCity();
 
   ensureFrame();
 
