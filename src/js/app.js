@@ -8,10 +8,12 @@ import {
   initClouds, initFog, initBirds,
   drawClouds, drawRain, drawSnow, drawLightning, drawFog, drawBirds
 } from './scene/atmosphere.js';
-import { selectLocation, setupSearch, setupUnitToggle, setupGeolocate, setupClock, updateUI, showLoadError } from './ui.js';
+import { selectLocation, setupSearch, setupUnitToggle, setupGeolocate, setupClock, setupPanelToggle, updateUI, showLoadError } from './ui.js';
 
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 let time = 0;
 let lastTs = 0;
+let rafId = null;
 
 function draw(ts) {
   const dt = Math.min((ts - lastTs) / 1000, 0.1);
@@ -32,7 +34,11 @@ function draw(ts) {
   drawSnow(time, dt);
   drawLightning(dt);
   drawBirds(dt);
-  requestAnimationFrame(draw);
+  rafId = reduceMotion.matches ? null : requestAnimationFrame(draw);
+}
+
+function ensureFrame() {
+  if (rafId === null) rafId = requestAnimationFrame(draw);
 }
 
 export async function init() {
@@ -49,14 +55,18 @@ export async function init() {
     initClouds();
     initBirds();
     if (weatherState.code >= 45 && weatherState.code <= 48) initFog();
+    ensureFrame();
   });
+  window.addEventListener('weather-updated', ensureFrame);
+  reduceMotion.addEventListener('change', ensureFrame);
 
   setupSearch();
   setupUnitToggle();
   setupGeolocate();
   setupClock();
+  setupPanelToggle();
 
-  requestAnimationFrame(draw);
+  ensureFrame();
 
   let saved = null;
   try {

@@ -56,6 +56,8 @@
   top: calc(100% + 6px);
   right: 0;
   width: 320px;
+  max-height: 40dvh;
+  overflow-y: auto;
   background: rgba(10, 10, 20, 0.85);
   backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.1);

@@ -48,4 +48,6 @@ export function applyWeatherToScene(data) {
 
   if (c.weather_code >= 45 && c.weather_code <= 48) initFog();
   else clearFog();
+
+  window.dispatchEvent(new Event('weather-updated'));
 }

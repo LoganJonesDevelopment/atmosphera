@@ -9,12 +9,13 @@ export function initCanvas() {
 }
 
 function resize() {
-  W = canvas.width = window.innerWidth * devicePixelRatio;
-  H = canvas.height = window.innerHeight * devicePixelRatio;
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  W = canvas.width = window.innerWidth * dpr;
+  H = canvas.height = window.innerHeight * dpr;
   ctx.setTransform(1, 0, 0, 1, 0, 0);
-  ctx.scale(devicePixelRatio, devicePixelRatio);
-  W /= devicePixelRatio;
-  H /= devicePixelRatio;
+  ctx.scale(dpr, dpr);
+  W /= dpr;
+  H /= dpr;
   window.dispatchEvent(new Event('canvas-resize'));
 }
 

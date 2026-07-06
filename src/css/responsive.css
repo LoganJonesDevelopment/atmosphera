@@ -1,6 +1,7 @@
 @media (max-width: 768px) {
   .top-bar {
-    padding: 20px 20px;
+    padding: 16px 16px 12px;
+    padding-top: max(16px, env(safe-area-inset-top));
   }
 
   .brand { display: none; }
@@ -9,10 +10,18 @@
 
   .search-input {
     width: 100%;
+    font-size: 16px;
+    padding-top: 12px;
+    padding-bottom: 12px;
   }
 
   .search-input:focus {
     width: 100%;
+  }
+
+  .geolocate-btn {
+    padding: 10px 12px;
+    font-size: 16px;
   }
 
   .suggestions {
@@ -22,8 +31,9 @@
   .bottom-bar {
     flex-direction: column-reverse;
     align-items: stretch;
-    padding: 0 20px 20px;
-    gap: 16px;
+    padding: 0 16px 30px;
+    padding-bottom: calc(30px + env(safe-area-inset-bottom));
+    gap: 12px;
   }
 
   .weather-panel {
@@ -31,7 +41,7 @@
   }
 
   .weather-glass {
-    padding: 20px 24px;
+    padding: 18px 20px;
   }
 
   .weather-temp {
@@ -42,12 +52,30 @@
     font-size: 22px;
   }
 
+  .panel-toggle {
+    display: flex;
+  }
+
+  .weather-glass.collapsed .panel-extra {
+    grid-template-rows: 0fr;
+  }
+
+  .weather-glass.collapsed .panel-toggle {
+    padding-bottom: 0;
+  }
+
+  .hourly-row {
+    margin-top: 0;
+    padding-top: 12px;
+    border-top: none;
+  }
+
   .time-display {
     text-align: left;
   }
 
   .time-clock {
-    font-size: 36px;
+    font-size: 34px;
   }
 
   .time-date {
@@ -55,28 +83,24 @@
   }
 
   .forecast-day .day-icon { font-size: 16px; }
+
+  .credit {
+    right: 16px;
+    bottom: calc(8px + env(safe-area-inset-bottom));
+  }
 }
 
 @media (max-width: 480px) {
-  .top-bar {
-    padding: 16px 16px;
-  }
-
-  .bottom-bar {
-    padding: 0 16px 16px;
-    gap: 12px;
-  }
-
   .weather-glass {
     padding: 16px 18px;
   }
 
   .weather-temp {
-    font-size: 44px;
+    font-size: 48px;
   }
 
   .weather-temp .unit {
-    font-size: 18px;
+    font-size: 19px;
   }
 
   .weather-desc {
@@ -93,15 +117,9 @@
     font-size: 14px;
   }
 
-  .hourly-row {
-    margin-top: 14px;
-    padding-top: 14px;
-    gap: 2px;
-  }
-
   .hourly-item {
     padding: 6px 8px;
-    min-width: 42px;
+    min-width: 44px;
   }
 
   .forecast-row {
@@ -111,10 +129,68 @@
   }
 
   .forecast-day {
-    padding: 6px 2px;
+    padding: 8px 2px;
   }
 
   .time-clock {
     font-size: 28px;
+  }
+}
+
+@media (max-height: 500px) and (min-width: 500px) {
+  .top-bar {
+    padding: 12px 20px;
+  }
+
+  .search-wrap {
+    width: 320px;
+    margin-left: auto;
+  }
+
+  .credit { display: none; }
+
+  .bottom-bar {
+    flex-direction: row;
+    align-items: flex-end;
+    padding: 0 20px 16px;
+    padding-bottom: calc(16px + env(safe-area-inset-bottom));
+    gap: 16px;
+  }
+
+  .weather-panel {
+    max-width: 440px;
+  }
+
+  .weather-glass {
+    padding: 14px 20px;
+    max-height: calc(100dvh - 90px);
+    overflow-y: auto;
+  }
+
+  .weather-temp {
+    font-size: 40px;
+  }
+
+  .weather-temp .unit {
+    font-size: 17px;
+  }
+
+  .weather-details {
+    margin-top: 10px;
+    padding-top: 10px;
+  }
+
+  .hourly-row,
+  .forecast-row {
+    margin-top: 10px;
+    padding-top: 10px;
+  }
+
+  .time-clock {
+    font-size: 28px;
+  }
+
+  .time-date {
+    font-size: 11px;
   }
 }

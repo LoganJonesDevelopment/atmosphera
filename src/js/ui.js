@@ -221,6 +221,28 @@ export function setupGeolocate() {
   });
 }
 
+export function setupPanelToggle() {
+  const glass = document.querySelector('.weather-glass');
+  const btn = document.getElementById('panelToggle');
+  const mobile = window.matchMedia('(max-width: 768px)');
+  let expanded = localStorage.getItem('weather_panel_expanded') === 'true';
+
+  function apply() {
+    const collapsed = mobile.matches && !expanded;
+    glass.classList.toggle('collapsed', collapsed);
+    btn.setAttribute('aria-expanded', String(!collapsed));
+  }
+
+  btn.addEventListener('click', () => {
+    expanded = !expanded;
+    localStorage.setItem('weather_panel_expanded', String(expanded));
+    apply();
+  });
+
+  mobile.addEventListener('change', apply);
+  apply();
+}
+
 export function setupClock() {
   function update() {
     const now = new Date();

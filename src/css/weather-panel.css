@@ -37,6 +37,10 @@
   color: var(--text-muted);
   cursor: pointer;
   transition: color 0.2s;
+  background: none;
+  border: none;
+  padding: 10px;
+  margin: -10px;
 }
 
 .weather-temp .unit:hover { color: rgba(255, 255, 255, 0.8); }
@@ -73,6 +77,43 @@
   font-size: 16px;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.85);
+}
+
+.panel-toggle {
+  display: none;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 14px;
+  padding: 10px 2px 2px;
+  border: none;
+  border-top: 1px solid var(--glass-border);
+  background: none;
+  color: var(--text-dim);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.panel-toggle-chevron {
+  transition: transform 0.3s ease;
+}
+
+.panel-toggle[aria-expanded="true"] .panel-toggle-chevron {
+  transform: rotate(180deg);
+}
+
+.panel-extra {
+  display: grid;
+  grid-template-rows: 1fr;
+  transition: grid-template-rows 0.35s ease;
+}
+
+.panel-extra-inner {
+  min-height: 0;
+  overflow: hidden;
 }
 
 .hourly-row {

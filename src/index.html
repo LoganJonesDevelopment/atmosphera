@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Atmosphera — Animated Canvas Weather</title>
 <meta name="description" content="Live weather rendered as a full-screen animated scene — sun and moon on real solar arcs, drifting clouds, rain, snow, fog, and lightning driven by actual conditions. Vanilla JS and HTML5 Canvas, zero dependencies.">
 <meta name="theme-color" content="#0a0a0f">
@@ -35,8 +35,8 @@
     <div class="brand">Atmosphera</div>
     <div class="search-wrap">
       <span class="search-icon">&#9906;</span>
-      <input type="text" class="search-input" id="search" placeholder="Search city..." autocomplete="off">
-      <button class="geolocate-btn" id="geoBtn" title="Use my location">&#9737;</button>
+      <input type="text" class="search-input" id="search" placeholder="Search city..." autocomplete="off" aria-label="Search city">
+      <button class="geolocate-btn" id="geoBtn" title="Use my location" aria-label="Use my location">&#9737;</button>
       <div class="suggestions" id="suggestions"></div>
     </div>
   </div>
@@ -45,7 +45,7 @@
     <div class="weather-panel" id="weatherPanel" style="display:none;">
       <div class="weather-glass">
         <div class="weather-location" id="locationName">--</div>
-        <div class="weather-temp"><span id="tempValue">--</span><span class="unit" id="unitToggle">&deg;F</span></div>
+        <div class="weather-temp"><span id="tempValue">--</span><button class="unit" id="unitToggle" aria-label="Switch temperature units">&deg;F</button></div>
         <div class="weather-desc" id="weatherDesc">--</div>
         <div class="weather-details">
           <div class="detail-item">
@@ -61,8 +61,16 @@
             <div class="detail-value" id="feelsLike">--</div>
           </div>
         </div>
-        <div class="hourly-row" id="hourly"></div>
-        <div class="forecast-row" id="forecast"></div>
+        <button class="panel-toggle" id="panelToggle" aria-expanded="true" aria-controls="panelExtra">
+          <span>Hourly &amp; 5-day</span>
+          <svg class="panel-toggle-chevron" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 4.5 6 8.5 10 4.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="panel-extra" id="panelExtra">
+          <div class="panel-extra-inner">
+            <div class="hourly-row" id="hourly"></div>
+            <div class="forecast-row" id="forecast"></div>
+          </div>
+        </div>
       </div>
     </div>
 

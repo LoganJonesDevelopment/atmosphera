@@ -2,6 +2,8 @@
 
 A weather dashboard that renders the current conditions as an animated canvas scene. The sky, terrain, clouds, rain, snow, fog, and lightning are all drawn procedurally and driven by live data from the Open-Meteo API. Vanilla JavaScript, no framework, no dependencies, no build step.
 
+**Live at [atmosphera-inky.vercel.app](https://atmosphera-inky.vercel.app)**
+
 ## Features
 
 - Animated scene that reacts to real weather: sky color shifts with time of day (sunrise/sunset from the forecast), cloud density scales with cloud cover, precipitation intensity maps from WMO weather codes
@@ -9,6 +11,9 @@ A weather dashboard that renders the current conditions as an animated canvas sc
 - 24-hour hourly strip and 5-day forecast
 - City search (Open-Meteo geocoding) and browser geolocation
 - Celsius/Fahrenheit toggle
+- Mobile-first responsive layout: collapsible forecast panel, safe-area aware, `prefers-reduced-motion` support
+
+Type is [Inter](https://rsms.me/inter/), used under the SIL Open Font License.
 
 ## Running
 
