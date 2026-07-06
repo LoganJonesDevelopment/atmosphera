@@ -90,7 +90,9 @@ export async function init() {
 
   setInterval(() => {
     if (currentLat !== null) {
-      fetchWeather(currentLat, currentLon).then(data => {
+      const lat = currentLat, lon = currentLon;
+      fetchWeather(lat, lon).then(data => {
+        if (lat !== currentLat || lon !== currentLon) return;
         applyWeatherToScene(data);
         updateUI(data);
       }).catch(() => {});

@@ -62,13 +62,17 @@ export function showLoadError() {
   document.getElementById('weatherPanel').style.display = 'block';
 }
 
+let selectSeq = 0;
+
 export async function selectLocation(lat, lon, name, admin, country) {
+  const seq = ++selectSeq;
   setCurrentLat(lat);
   setCurrentLon(lon);
   const parts = [name, admin, country].filter(Boolean);
   document.getElementById('locationName').textContent = parts.slice(0, 2).join(', ');
   localStorage.setItem('weather_location', JSON.stringify({ lat, lon, name, admin, country }));
   const data = await fetchWeather(lat, lon);
+  if (seq !== selectSeq) return;
   setCurrentWeatherData(data);
   applyWeatherToScene(data);
   updateUI(data);
@@ -225,7 +229,8 @@ export function setupGeolocate() {
 export function setupRandomCity() {
   const btn = document.getElementById('randomBtn');
   let last = -1;
-  btn.addEventListener('click', () => {
+
+  function roll() {
     let i;
     do { i = Math.floor(Math.random() * CITIES.length); } while (i === last);
     last = i;
@@ -234,7 +239,26 @@ export function setupRandomCity() {
     void btn.offsetWidth;
     btn.classList.add('rolling');
     selectLocation(lat, lon, name, admin, country).catch(showLoadError);
+  }
+
+  btn.addEventListener('click', roll);
+
+  const scene = document.getElementById('scene');
+  let start = null;
+  scene.addEventListener('pointerdown', (e) => {
+    start = e.pointerType !== 'mouse' && e.isPrimary
+      ? { x: e.clientX, y: e.clientY, t: performance.now() }
+      : null;
   });
+  scene.addEventListener('pointerup', (e) => {
+    if (!start || !e.isPrimary) return;
+    const dx = e.clientX - start.x;
+    const dy = e.clientY - start.y;
+    const dt = performance.now() - start.t;
+    start = null;
+    if (dt < 600 && Math.abs(dx) > 60 && Math.abs(dx) > 2 * Math.abs(dy)) roll();
+  });
+  scene.addEventListener('pointercancel', () => { start = null; });
 }
 
 export function setupPanelToggle() {
