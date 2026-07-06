@@ -2,6 +2,7 @@ import { formatTemp, useFahrenheit, setUseFahrenheit, currentWeatherData, setCur
 import { WMO_DESCRIPTIONS, WMO_ICONS, MOON_ICON, DEFAULT_ICON } from './weather-codes.js';
 import { fetchWeather, geocode } from './api.js';
 import { applyWeatherToScene } from './weather-engine.js';
+import { setLayoutSeed } from './scene/rng.js';
 import { CITIES } from './cities.js';
 
 export function updateUI(data) {
@@ -68,6 +69,7 @@ export async function selectLocation(lat, lon, name, admin, country) {
   const seq = ++selectSeq;
   setCurrentLat(lat);
   setCurrentLon(lon);
+  setLayoutSeed(lat, lon);
   const parts = [name, admin, country].filter(Boolean);
   document.getElementById('locationName').textContent = parts.slice(0, 2).join(', ');
   localStorage.setItem('weather_location', JSON.stringify({ lat, lon, name, admin, country }));

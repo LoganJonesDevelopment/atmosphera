@@ -2,6 +2,7 @@ import { initCanvas, getCtx, getW, getH } from './canvas.js';
 import { currentLat, currentLon, weatherState } from './state.js';
 import { fetchWeather } from './api.js';
 import { applyWeatherToScene } from './weather-engine.js';
+import { resolveMoment } from './scene/moment.js';
 import { initTerrain, drawTerrain, drawGrass, drawPuddles } from './scene/terrain.js';
 import { initStars, drawSky, drawStars, drawSun, drawMoon } from './scene/sky.js';
 import {
@@ -19,21 +20,22 @@ function draw(ts) {
   const dt = Math.min((ts - lastTs) / 1000, 0.1);
   lastTs = ts;
   time += dt;
+  const m = resolveMoment();
   const ctx = getCtx(), W = getW(), H = getH();
   ctx.clearRect(0, 0, W, H);
-  drawSky();
-  drawStars(time);
-  drawSun();
-  drawMoon();
-  drawClouds(dt);
-  drawTerrain();
-  drawGrass(time);
-  drawPuddles(time);
-  drawFog(dt);
-  drawRain(dt);
-  drawSnow(time, dt);
-  drawLightning(dt);
-  drawBirds(dt);
+  drawSky(m);
+  drawStars(m, time);
+  drawSun(m);
+  drawMoon(m);
+  drawClouds(m, dt);
+  drawTerrain(m);
+  drawGrass(m, time);
+  drawPuddles(m, time);
+  drawFog(m, dt);
+  drawRain(m, dt);
+  drawSnow(m, time, dt);
+  drawLightning(m, dt);
+  drawBirds(m, dt);
   rafId = reduceMotion.matches ? null : requestAnimationFrame(draw);
 }
 
@@ -45,15 +47,15 @@ export async function init() {
   initCanvas();
   initTerrain();
   initStars();
-  initClouds();
+  initClouds(weatherState.cloudCover);
   initFog();
-  initBirds();
+  initBirds(weatherState.isDay, weatherState.code);
 
   window.addEventListener('canvas-resize', () => {
     initTerrain();
     initStars();
-    initClouds();
-    initBirds();
+    initClouds(weatherState.cloudCover);
+    initBirds(weatherState.isDay, weatherState.code);
     if (weatherState.code >= 45 && weatherState.code <= 48) initFog();
     ensureFrame();
   });

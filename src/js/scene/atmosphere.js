@@ -1,5 +1,5 @@
 import { getCtx, getW, getH } from '../canvas.js';
-import { weatherState } from '../state.js';
+import { layoutRng } from './rng.js';
 
 let clouds = [];
 let raindrops = [];
@@ -8,27 +8,28 @@ let fogLayers = [];
 let lightning = { active: false, timer: 0, bolts: [], flash: 0 };
 let birds = [];
 
-function makeCloud() {
+function makeCloud(rnd) {
   const W = getW(), H = getH();
-  const w = 120 + Math.random() * 250;
+  const w = 120 + rnd() * 250;
   return {
-    x: Math.random() * (W + 400) - 200,
-    y: 30 + Math.random() * H * 0.3,
-    width: w, height: w * (0.25 + Math.random() * 0.2),
-    speed: 0.15 + Math.random() * 0.4,
-    opacity: 0.3 + Math.random() * 0.5,
-    puffs: Array.from({ length: 5 + Math.floor(Math.random() * 6) }, () => ({
-      xOff: (Math.random() - 0.5) * w * 0.7,
-      yOff: (Math.random() - 0.5) * w * 0.15,
-      r: 20 + Math.random() * w * 0.25
+    x: rnd() * (W + 400) - 200,
+    y: 30 + rnd() * H * 0.3,
+    width: w, height: w * (0.25 + rnd() * 0.2),
+    speed: 0.15 + rnd() * 0.4,
+    opacity: 0.3 + rnd() * 0.5,
+    puffs: Array.from({ length: 5 + Math.floor(rnd() * 6) }, () => ({
+      xOff: (rnd() - 0.5) * w * 0.7,
+      yOff: (rnd() - 0.5) * w * 0.15,
+      r: 20 + rnd() * w * 0.25
     }))
   };
 }
 
-export function initClouds() {
+export function initClouds(cloudCover) {
+  const rnd = layoutRng('clouds');
   clouds = [];
-  const count = 5 + Math.floor(weatherState.cloudCover / 15);
-  for (let i = 0; i < count; i++) clouds.push(makeCloud());
+  const count = 5 + Math.floor(cloudCover / 15);
+  for (let i = 0; i < count; i++) clouds.push(makeCloud(rnd));
 }
 
 export function initRain(intensity) {
@@ -63,43 +64,45 @@ export function clearSnow() { snowflakes = []; }
 
 export function initFog() {
   const H = getH();
+  const rnd = layoutRng('fog');
   fogLayers = [];
   for (let i = 0; i < 6; i++) {
     fogLayers.push({
-      y: H * 0.4 + Math.random() * H * 0.35,
-      speed: 0.2 + Math.random() * 0.5,
-      offset: Math.random() * 1000,
-      opacity: 0.08 + Math.random() * 0.12,
-      height: 60 + Math.random() * 100
+      y: H * 0.4 + rnd() * H * 0.35,
+      speed: 0.2 + rnd() * 0.5,
+      offset: rnd() * 1000,
+      opacity: 0.08 + rnd() * 0.12,
+      height: 60 + rnd() * 100
     });
   }
 }
 
 export function clearFog() { fogLayers = []; }
 
-export function initBirds() {
+export function initBirds(isDay, code) {
   const W = getW(), H = getH();
+  const rnd = layoutRng('birds');
   birds = [];
-  if (!weatherState.isDay || weatherState.code >= 61) return;
-  for (let i = 0; i < 3 + Math.floor(Math.random() * 4); i++) {
+  if (!isDay || code >= 61) return;
+  for (let i = 0; i < 3 + Math.floor(rnd() * 4); i++) {
     birds.push({
-      x: Math.random() * W, y: 50 + Math.random() * H * 0.25,
-      speed: 0.8 + Math.random() * 1.2, wingPhase: Math.random() * Math.PI * 2,
-      size: 3 + Math.random() * 4
+      x: rnd() * W, y: 50 + rnd() * H * 0.25,
+      speed: 0.8 + rnd() * 1.2, wingPhase: rnd() * Math.PI * 2,
+      size: 3 + rnd() * 4
     });
   }
 }
 
-export function drawClouds(dt) {
+export function drawClouds(m, dt) {
   const ctx = getCtx(), W = getW(), H = getH();
   clouds.forEach(c => {
-    c.x += c.speed * (weatherState.windSpeed / 10 + 0.3) * dt * 60;
+    c.x += c.speed * (m.windSpeed / 10 + 0.3) * dt * 60;
     if (c.x > W + c.width) { c.x = -c.width - 50; c.y = 30 + Math.random() * H * 0.3; }
-    const isDark = weatherState.code >= 61 || !weatherState.isDay;
+    const isDark = m.code >= 61 || !m.isDay;
     const baseR = isDark ? 60 : 240;
     const baseG = isDark ? 65 : 245;
     const baseB = isDark ? 75 : 250;
-    const alpha = c.opacity * (weatherState.cloudCover / 100) * (isDark ? 0.9 : 0.7);
+    const alpha = c.opacity * (m.cloudCover / 100) * (isDark ? 0.9 : 0.7);
     c.puffs.forEach(p => {
       ctx.beginPath();
       ctx.arc(c.x + p.xOff, c.y + p.yOff, p.r, 0, Math.PI * 2);
@@ -109,9 +112,9 @@ export function drawClouds(dt) {
   });
 }
 
-export function drawRain(dt) {
+export function drawRain(m, dt) {
   const ctx = getCtx(), W = getW(), H = getH();
-  const wind = weatherState.windSpeed * 0.3;
+  const wind = m.windSpeed * 0.3;
   raindrops.forEach(r => {
     r.y += r.speed * dt * 60;
     r.x += wind * dt * 60;
@@ -125,11 +128,11 @@ export function drawRain(dt) {
   });
 }
 
-export function drawSnow(time, dt) {
+export function drawSnow(m, time, dt) {
   const ctx = getCtx(), W = getW(), H = getH();
   snowflakes.forEach(s => {
     s.y += s.speed * dt * 60;
-    s.x += (Math.sin(s.wobble + time * s.wobbleSpeed) * 0.5 + weatherState.windSpeed * 0.1) * dt * 60;
+    s.x += (Math.sin(s.wobble + time * s.wobbleSpeed) * 0.5 + m.windSpeed * 0.1) * dt * 60;
     if (s.y > H) { s.y = -10; s.x = Math.random() * W; }
     if (s.x > W) s.x = 0;
     ctx.beginPath();
@@ -139,8 +142,8 @@ export function drawSnow(time, dt) {
   });
 }
 
-export function drawLightning(dt) {
-  if (weatherState.code < 95) { lightning.active = false; return; }
+export function drawLightning(m, dt) {
+  if (m.code < 95) { lightning.active = false; return; }
   const ctx = getCtx(), W = getW(), H = getH();
   lightning.timer -= dt * 60;
   if (lightning.timer <= 0) {
@@ -189,8 +192,8 @@ export function drawLightning(dt) {
   }
 }
 
-export function drawFog(dt) {
-  if (weatherState.code < 45 || weatherState.code > 48) return;
+export function drawFog(m, dt) {
+  if (m.code < 45 || m.code > 48) return;
   const ctx = getCtx(), W = getW();
   fogLayers.forEach(f => {
     f.offset += f.speed * dt * 60;
@@ -204,7 +207,7 @@ export function drawFog(dt) {
   });
 }
 
-export function drawBirds(dt) {
+export function drawBirds(m, dt) {
   const ctx = getCtx(), W = getW(), H = getH();
   birds.forEach(b => {
     b.x += b.speed * dt * 60;
@@ -215,7 +218,7 @@ export function drawBirds(dt) {
     ctx.moveTo(b.x - b.size, b.y + wing);
     ctx.quadraticCurveTo(b.x - b.size * 0.3, b.y - wing * 0.3, b.x, b.y);
     ctx.quadraticCurveTo(b.x + b.size * 0.3, b.y - wing * 0.3, b.x + b.size, b.y + wing);
-    ctx.strokeStyle = weatherState.isDay ? 'rgba(30,30,30,0.5)' : 'rgba(200,200,200,0.3)';
+    ctx.strokeStyle = m.isDay ? 'rgba(30,30,30,0.5)' : 'rgba(200,200,200,0.3)';
     ctx.lineWidth = 1.5;
     ctx.stroke();
   });

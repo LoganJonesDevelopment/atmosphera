@@ -15,6 +15,13 @@ A weather dashboard that renders the current conditions as an animated canvas sc
 
 Type is [Inter](https://rsms.me/inter/), used under the SIL Open Font License.
 
+## Architecture
+
+The scene renders a value, not the app's state: every frame draws a single
+`SceneMoment` that can come from live conditions or from any point in the hourly
+forecast, and scene layout is deterministically seeded per location. See
+[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+
 ## Running
 
 ```

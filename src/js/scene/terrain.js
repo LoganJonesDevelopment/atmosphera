@@ -1,5 +1,5 @@
 import { getW, getH, getCtx } from '../canvas.js';
-import { weatherState } from '../state.js';
+import { layoutRng } from './rng.js';
 
 let terrainPoints = [];
 let grassBlades = [];
@@ -7,6 +7,7 @@ let puddles = [];
 
 export function initTerrain() {
   const W = getW(), H = getH();
+  const rnd = layoutRng('terrain');
   terrainPoints = [];
   const segments = Math.ceil(W / 8) + 1;
   for (let layer = 0; layer < 3; layer++) {
@@ -25,17 +26,17 @@ export function initTerrain() {
 
   grassBlades = [];
   for (let i = 0; i < 300; i++) {
-    const x = Math.random() * W;
+    const x = rnd() * W;
     const terrainY = getTerrainY(x, 0);
     grassBlades.push({
-      x, y: terrainY, height: 8 + Math.random() * 16,
-      sway: Math.random() * Math.PI * 2, swaySpeed: 0.5 + Math.random() * 1.5
+      x, y: terrainY, height: 8 + rnd() * 16,
+      sway: rnd() * Math.PI * 2, swaySpeed: 0.5 + rnd() * 1.5
     });
   }
 
   puddles = [];
   for (let i = 0; i < 8; i++) {
-    const x = Math.random() * W;
+    const x = rnd() * W;
     puddles.push({ x, y: getTerrainY(x, 0) + 3 });
   }
 }
@@ -51,15 +52,15 @@ export function getTerrainY(x, layer) {
   return pts[i].y * (1 - t) + pts[i + 1].y * t;
 }
 
-export function drawTerrain() {
+export function drawTerrain(m) {
   const ctx = getCtx(), W = getW(), H = getH();
   for (let layer = 2; layer >= 0; layer--) {
     const pts = terrainPoints[layer];
     if (!pts || pts.length === 0) continue;
     const depth = (2 - layer) / 2;
     let r, g, b;
-    if (weatherState.isDay) {
-      if (weatherState.code >= 71) {
+    if (m.isDay) {
+      if (m.code >= 71) {
         r = Math.round(200 + depth * 40);
         g = Math.round(205 + depth * 35);
         b = Math.round(215 + depth * 30);
@@ -84,12 +85,12 @@ export function drawTerrain() {
   }
 }
 
-export function drawGrass(time) {
-  if (weatherState.code >= 71) return;
+export function drawGrass(m, time) {
+  if (m.code >= 71) return;
   const ctx = getCtx();
-  const baseColor = weatherState.isDay ? [30, 90, 30] : [10, 25, 12];
+  const baseColor = m.isDay ? [30, 90, 30] : [10, 25, 12];
   grassBlades.forEach(g => {
-    const sway = Math.sin(g.sway + time * g.swaySpeed) * (weatherState.windSpeed * 0.4 + 2);
+    const sway = Math.sin(g.sway + time * g.swaySpeed) * (m.windSpeed * 0.4 + 2);
     ctx.beginPath();
     ctx.moveTo(g.x - 1, g.y);
     ctx.quadraticCurveTo(g.x + sway * 0.5, g.y - g.height * 0.5, g.x + sway, g.y - g.height);
@@ -99,8 +100,8 @@ export function drawGrass(time) {
   });
 }
 
-export function drawPuddles(time) {
-  if (weatherState.code < 63) return;
+export function drawPuddles(m, time) {
+  if (m.code < 63) return;
   const ctx = getCtx();
   puddles.forEach((p, i) => {
     const ripple = Math.sin(time * 3 + i * 2) * 2;
